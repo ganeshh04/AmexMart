@@ -6,6 +6,7 @@ import com.amexmart.model.User;
 import com.amexmart.repository.UserRepository;
 import com.amexmart.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+
+    @Override
+    public User saveUser(User user)
+    {
+        return userRepository.save(user);
+    }
 
     @Override
     public User getCurrentUser() {

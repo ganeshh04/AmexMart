@@ -5,7 +5,9 @@ import com.amexmart.model.User;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService
+{
+    public User saveUser(User user) ;
 
     User getCurrentUser();
 
