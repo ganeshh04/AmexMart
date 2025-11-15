@@ -1,5 +1,6 @@
 package com.amexmart.service;
 
+import com.amexmart.dto.ChangePasswordRequest;
 import com.amexmart.dto.UserProfileDto;
 import com.amexmart.model.User;
 
@@ -20,4 +21,7 @@ public interface UserService
     User getUserById(Long id);
 
     void deleteUser(Long id);
+
+    void changePassword(ChangePasswordRequest request);
+
 }

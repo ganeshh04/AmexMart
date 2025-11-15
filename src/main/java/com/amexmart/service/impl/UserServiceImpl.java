@@ -1,6 +1,7 @@
 package com.amexmart.service.impl;
 
 
+import com.amexmart.dto.ChangePasswordRequest;
 import com.amexmart.dto.UserProfileDto;
 import com.amexmart.model.User;
 import com.amexmart.repository.UserRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public User saveUser(User user)
@@ -69,4 +73,19 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+    @Override
+    public void changePassword(ChangePasswordRequest request) {
+        User user = getCurrentUser();  // logged-in user
+
+        // compare old password with DB password
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect");
+        }
+
+        // encode new password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
 }
