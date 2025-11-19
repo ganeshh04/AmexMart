@@ -25,23 +25,30 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
-
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/users/register").permitAll()
 
-                        // Protected routes
-                        .requestMatchers("/api/addresses/**").authenticated()
-                        .requestMatchers("/api/users/change-password").authenticated()
-                        .requestMatchers("/api/users/me").authenticated()
-                        .requestMatchers("/api/users/update").authenticated()
+                        // Public endpoints
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/register").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
 
-                        // All other routes
+                        // User authenticated endpoints
+                        .requestMatchers("/api/addresses/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/users/change-password").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/users/me").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/users/update").hasAnyRole("USER", "ADMIN")
+
+                        // Admin-only endpoints
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // Everything else must be authenticated
                         .anyRequest().authenticated()
                 )
 
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable());
 

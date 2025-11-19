@@ -34,7 +34,6 @@ public class UserController {
 
     // ✅ Register User
     @PostMapping("/register")
-
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDto dto) {
         if (userRepository.existsByUsername(dto.getUsername())) {
             return ResponseEntity.badRequest().body("Username already exists");
