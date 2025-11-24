@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +15,6 @@ public class Role {
     private Long id;
 
     @Column(unique = true)
-    private String name;  // ROLE_USER, ROLE_ADMIN
+    private String name;  // ROLE_USER or ROLE_ADMIN
 }
+

@@ -1,5 +1,6 @@
 package com.amexmart.controller;
 
+import com.amexmart.dto.AuthResponse;
 import com.amexmart.dto.UserLoginDto;
 import com.amexmart.security.JwtUtil;
 import com.amexmart.service.impl.UserDetailsServiceImpl;
@@ -20,7 +21,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDto loginDto) {
         try {
@@ -34,12 +35,11 @@ public class AuthController {
             UserDetails userDetails = (UserDetails) auth.getPrincipal();
             String token = jwtUtil.generateToken(userDetails);
 
-            return ResponseEntity.ok("Bearer " + token);
-
-
+            return ResponseEntity.ok(new AuthResponse("Bearer " + token));
 
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
     }
+
 }

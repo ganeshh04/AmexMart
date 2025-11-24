@@ -25,10 +25,10 @@ public class User {
     @Column(unique = true)
     private String username;
 
-    @NotBlank
+
     private String firstName;
 
-    @NotBlank
+
     private String lastName;
 
     @Email
@@ -41,7 +41,7 @@ public class User {
 
     private String phoneNumber;
 
-    private String role = "CUSTOMER";  // ADMIN or CUSTOMER
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Address> addresses = new HashSet<>();

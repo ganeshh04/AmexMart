@@ -1,38 +1,45 @@
 package com.amexmart.service.impl;
 
+import com.amexmart.dto.ProductDto;
 import com.amexmart.model.Product;
 import com.amexmart.repository.ProductRepository;
 import com.amexmart.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public Product addProduct(Product product) {
-        return productRepository.save(product);
+    public ProductDto createProduct(ProductDto dto) {
+        Product product = modelMapper.map(dto, Product.class);
+        return modelMapper.map(productRepository.save(product), ProductDto.class);
     }
 
+
+
     @Override
-    public Product updateProduct(Long id, Product updatedProduct) {
+    public ProductDto updateProduct(Long id, ProductDto dto) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        product.setName(updatedProduct.getName());
-        product.setDescription(updatedProduct.getDescription());
-        product.setPrice(updatedProduct.getPrice());
-        product.setStock(updatedProduct.getStock());
-        product.setCategory(updatedProduct.getCategory());
-        product.setImageUrl(updatedProduct.getImageUrl());
+        // DO NOT MAP ID
+        dto.setId(product.getId());
 
-        return productRepository.save(product);
+        modelMapper.map(dto, product);
+
+        Product saved = productRepository.save(product);
+
+        return modelMapper.map(saved, ProductDto.class);
     }
+
 
     @Override
     public void deleteProduct(Long id) {
@@ -43,13 +50,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(Long id) {
-        return productRepository.findById(id)
+    public ProductDto getProductById(Long id) {
+        Product p = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+        return modelMapper.map(p, ProductDto.class);
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<ProductDto> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable)
+                .map(product -> modelMapper.map(product, ProductDto.class));
     }
 }

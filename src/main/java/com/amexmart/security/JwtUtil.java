@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     private static final String SECRET_KEY =
-            "your_secret_key_should_be_long_and_secure_12345678901234567890";
+            "YTR76KNB98PLMNHYTGVCXSQWERTYUIOP1234567890ZXCVBNMASDFGHJKLQWERT";
 
     private static final long EXPIRATION_TIME = 86400000; // 24 hours
 

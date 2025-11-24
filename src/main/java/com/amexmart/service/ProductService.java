@@ -1,18 +1,18 @@
 package com.amexmart.service;
 
-import com.amexmart.model.Product;
-
-import java.util.List;
+import com.amexmart.dto.ProductDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
 
-    Product addProduct(Product product);
+    ProductDto createProduct(ProductDto dto);
 
-    Product updateProduct(Long id, Product product);
+    ProductDto updateProduct(Long id, ProductDto dto);
 
     void deleteProduct(Long id);
 
-    Product getProductById(Long id);
+    ProductDto getProductById(Long id);
 
-    List<Product> getAllProducts();
+    Page<ProductDto> getAllProducts(Pageable pageable);
 }

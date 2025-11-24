@@ -35,6 +35,7 @@ public class UserController {
     // ✅ Register User
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserRegisterDto dto) {
+
         if (userRepository.existsByUsername(dto.getUsername())) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
@@ -45,28 +46,31 @@ public class UserController {
 
         User user = new User();
         user.setUsername(dto.getUsername());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setPhoneNumber(dto.getPhoneNumber());
 
-        // ⭐ Assign actual Spring Security role (ROLE_USER)
         Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found"));
 
-        user.setRoles(Set.of(userRole)); // Set default role
+        user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
+
         return ResponseEntity.ok("User registered successfully");
     }
 
 
+
     // ✅ Get current user profile
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @GetMapping("/me")
     public ResponseEntity<UserProfileDto> getProfile() {
         return ResponseEntity.ok(userService.getUserProfile());
     }
+
 
     // ✅ Update profile
     @PutMapping("/me")
